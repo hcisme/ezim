@@ -1,10 +1,15 @@
 package org.chc.ezim;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@EnableAsync
+@EnableScheduling
+@MapperScan({"org.chc.ezim.mapper"})
+@SpringBootApplication
 public class EzimApplication {
 
     public static void main(String[] args) {
