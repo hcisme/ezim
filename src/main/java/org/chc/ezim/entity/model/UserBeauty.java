@@ -25,10 +25,16 @@ public class UserBeauty implements Serializable {
 	private String email;
 
 	/**
-	 * 0: 已使用 1: 未使用
+	 * 1: 已使用 0: 未使用
 	 */
 	private Integer status;
 
+	public UserBeauty() {
+	}
+
+	public UserBeauty(Integer status) {
+		this.status = status;
+	}
 
 	public void setId(Integer id){
 		this.id = id;
@@ -64,6 +70,6 @@ public class UserBeauty implements Serializable {
 
 	@Override
 	public String toString (){
-		return "自增id:"+(id == null ? "空" : id)+"，已存在的 用户id:"+(userId == null ? "空" : userId)+"，邮箱:"+(email == null ? "空" : email)+"，0: 已使用 1: 未使用:"+(status == null ? "空" : status);
+		return "自增id:"+(id == null ? "空" : id)+"，已存在的 用户id:"+(userId == null ? "空" : userId)+"，邮箱:"+(email == null ? "空" : email)+"，1: 已使用 0: 未使用:"+(status == null ? "空" : status);
 	}
 }

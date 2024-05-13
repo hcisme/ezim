@@ -83,6 +83,20 @@ public class User implements Serializable {
      */
     private Long lastOffTime;
 
+    public User() {
+    }
+
+    // 注册用的
+    public User(String id, String email, String nickName, String password, Integer joinType,Integer status, Date createTime, Long lastOffTime) {
+        this.id = id;
+        this.email = email;
+        this.nickName = nickName;
+        this.password = password;
+        this.joinType = joinType;
+        this.status = status;
+        this.createTime = createTime;
+        this.lastOffTime = lastOffTime;
+    }
 
     public void setId(String id) {
         this.id = id;

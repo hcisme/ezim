@@ -11,7 +11,7 @@
 		<result column="user_id" property="userId"  />
 		<!--邮箱-->
 		<result column="email" property="email"  />
-		<!--0: 已使用 1: 未使用-->
+		<!--1: 已使用 0: 未使用-->
 		<result column="status" property="status"  />
 	</resultMap>
 

@@ -8,10 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestControllerAdvice
 public class AGlobalExceptionHandlerController extends ABaseController {
@@ -34,10 +38,20 @@ public class AGlobalExceptionHandlerController extends ABaseController {
             ajaxResponse.setMsg(biz.getMessage());
             ajaxResponse.setStatus(STATUC_ERROR);
         } else if (e instanceof BindException || e instanceof MethodArgumentTypeMismatchException) {
+            var map = new HashMap<String, Object>();
             // 参数类型错误
             ajaxResponse.setCode(ResponseCodeEnum.CODE_600.getCode());
             ajaxResponse.setMsg(ResponseCodeEnum.CODE_600.getMsg());
             ajaxResponse.setStatus(STATUC_ERROR);
+
+            if (e instanceof BindException && ((BindException) e).hasErrors()) {
+                List<FieldError> fieldErrors = ((BindException) e).getFieldErrors();
+                for (int i = 0; i < fieldErrors.size(); i++) {
+                    FieldError field = fieldErrors.get(i);
+                    map.put(field.getField() + "-" + i, field.getDefaultMessage());
+                }
+                ajaxResponse.setData(map);
+            }
         } else if (e instanceof DuplicateKeyException) {
             // 主键冲突
             ajaxResponse.setCode(ResponseCodeEnum.CODE_601.getCode());
@@ -47,7 +61,9 @@ public class AGlobalExceptionHandlerController extends ABaseController {
             ajaxResponse.setCode(ResponseCodeEnum.CODE_500.getCode());
             ajaxResponse.setMsg(ResponseCodeEnum.CODE_500.getMsg());
             ajaxResponse.setStatus(STATUC_ERROR);
+            ajaxResponse.setData(e.getMessage());
         }
+
         return ajaxResponse;
     }
 }

@@ -3,7 +3,7 @@ package org.chc.ezim.entity.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
-public class RegisterDto {
+public class LoginDto {
 
     @NotEmpty
     private String captchaKey;
@@ -11,9 +11,6 @@ public class RegisterDto {
     @NotEmpty
     @Email
     private String email;
-
-    @NotEmpty
-    private String nickName;
 
     @NotEmpty
     private String password;
@@ -37,14 +34,6 @@ public class RegisterDto {
         this.email = email;
     }
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -63,10 +52,9 @@ public class RegisterDto {
 
     @Override
     public String toString() {
-        return "RegisterDto{" +
+        return "LoginDto{" +
                 "captchaKey='" + captchaKey + '\'' +
                 ", email='" + email + '\'' +
-                ", nickName='" + nickName + '\'' +
                 ", password='" + password + '\'' +
                 ", captcha='" + captcha + '\'' +
                 '}';

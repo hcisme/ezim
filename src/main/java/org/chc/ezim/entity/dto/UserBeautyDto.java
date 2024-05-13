@@ -28,7 +28,7 @@ public class UserBeautyDto extends BaseParam {
 	private String emailFuzzy;
 
 	/**
-	 * 0: 已使用 1: 未使用
+	 * 1: 已使用 0: 未使用
 	 */
 	private Integer status;
 

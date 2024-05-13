@@ -23,12 +23,12 @@ spring:
 
 # 自定义变量名
 log:
-  path: D:\code\java\ezim\
+  path: D:/code/java/ezim/
   root:
     level: info
 
 project:
-  folder: D:\code\java\ezim\
+  folder: D:/code/java/ezim/
 
 admin:
-  email: _chihaicheng@163.com
+  emails: _chihaicheng_dev@163.com

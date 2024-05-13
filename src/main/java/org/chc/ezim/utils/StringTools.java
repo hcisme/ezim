@@ -1,8 +1,13 @@
 package org.chc.ezim.utils;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.chc.ezim.entity.constants.Constants;
+import org.chc.ezim.entity.enums.UserContactTypeEnum;
 import org.chc.ezim.exception.BusinessException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 
 public class StringTools {
 
@@ -35,7 +40,7 @@ public class StringTools {
         if (isEmpty(field)) {
             return field;
         }
-        //如果第二个字母是大写，第一个字母不大写
+        // 如果第二个字母是大写，第一个字母不大写
         if (field.length() > 1 && Character.isUpperCase(field.charAt(1))) {
             return field;
         }
@@ -49,5 +54,21 @@ public class StringTools {
             return true;
         }
         return false;
+    }
+
+    public static String getUserId() {
+        return UserContactTypeEnum.USER.getPrefix() + getRandomNumber(Constants.LENGTH_11);
+    }
+
+    public static String getRandomNumber(Integer count) {
+        return RandomStringUtils.random(count, false, true);
+    }
+
+    public static String getRandomString(Integer count) {
+        return RandomStringUtils.random(count, true, true);
+    }
+
+    public static String encodeMd5(String originString) {
+        return StringTools.isEmpty(originString) ? null : DigestUtils.md5Hex(originString);
     }
 }
