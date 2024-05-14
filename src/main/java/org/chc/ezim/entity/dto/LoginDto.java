@@ -2,6 +2,7 @@ package org.chc.ezim.entity.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public class LoginDto {
 
@@ -10,9 +11,11 @@ public class LoginDto {
 
     @NotEmpty
     @Email
+    @Size(max = 50)
     private String email;
 
     @NotEmpty
+    @Size(min = 6, max = 32)
     private String password;
 
     @NotEmpty

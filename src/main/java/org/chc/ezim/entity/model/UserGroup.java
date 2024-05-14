@@ -53,6 +53,13 @@ public class UserGroup implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 
+	public UserGroup(String id, String groupName, String groupOwnerId, String groupNotice, Integer joinType) {
+		this.id = id;
+		this.groupName = groupName;
+		this.groupOwnerId = groupOwnerId;
+		this.groupNotice = groupNotice;
+		this.joinType = joinType;
+	}
 
 	public void setId(String id){
 		this.id = id;

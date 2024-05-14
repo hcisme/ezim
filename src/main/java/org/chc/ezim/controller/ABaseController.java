@@ -1,10 +1,17 @@
 package org.chc.ezim.controller;
+
+import jakarta.annotation.Resource;
+import org.chc.ezim.entity.constants.Constants;
+import org.chc.ezim.entity.dto.TokenUserInfoDto;
 import org.chc.ezim.entity.enums.ResponseCodeEnum;
 import org.chc.ezim.entity.vo.ResponseVO;
 import org.chc.ezim.exception.BusinessException;
+import org.chc.ezim.redis.RedisUtils;
 
 
 public class ABaseController {
+    @Resource
+    private RedisUtils redisUtils;
 
     protected static final String STATUC_SUCCESS = "success";
 
@@ -39,5 +46,9 @@ public class ABaseController {
         vo.setMsg(ResponseCodeEnum.CODE_500.getMsg());
         vo.setData(t);
         return vo;
+    }
+
+    protected TokenUserInfoDto getTokenInfo(String token) {
+        return (TokenUserInfoDto) redisUtils.getValue(Constants.REDIS_KEY_WS_TOKEN + token);
     }
 }

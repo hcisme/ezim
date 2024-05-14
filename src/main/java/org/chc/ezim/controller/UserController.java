@@ -2,6 +2,7 @@ package org.chc.ezim.controller;
 
 import io.springboot.captcha.ArithmeticCaptcha;
 import jakarta.annotation.Resource;
+import org.chc.ezim.annotation.GlobalAccessInterceptor;
 import org.chc.ezim.entity.constants.Constants;
 import org.chc.ezim.entity.dto.LoginDto;
 import org.chc.ezim.entity.dto.RegisterDto;
@@ -188,6 +189,7 @@ public class UserController extends ABaseController {
     /**
      * 得到用户设置
      */
+    @GlobalAccessInterceptor
     @GetMapping("/getSetting")
     public ResponseVO getSetting() {
         SettingDto setting = redisComponent.getSetting();

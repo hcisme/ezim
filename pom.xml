@@ -59,6 +59,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- spring-aop -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- netty-all -->
         <dependency>
             <groupId>io.netty</groupId>

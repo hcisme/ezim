@@ -54,6 +54,12 @@ public class UserGroupDto extends BaseParam {
 
 	private String createTimeEnd;
 
+	public UserGroupDto() {
+	}
+
+	public UserGroupDto(String id) {
+		this.id = id;
+	}
 
 	public void setId(String id){
 		this.id = id;

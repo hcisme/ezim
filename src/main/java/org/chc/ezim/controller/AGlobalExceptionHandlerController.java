@@ -61,7 +61,6 @@ public class AGlobalExceptionHandlerController extends ABaseController {
             ajaxResponse.setCode(ResponseCodeEnum.CODE_500.getCode());
             ajaxResponse.setMsg(ResponseCodeEnum.CODE_500.getMsg());
             ajaxResponse.setStatus(STATUC_ERROR);
-            ajaxResponse.setData(e.getMessage());
         }
 
         return ajaxResponse;

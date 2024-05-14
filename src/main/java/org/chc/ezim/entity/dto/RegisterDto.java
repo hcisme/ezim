@@ -2,6 +2,7 @@ package org.chc.ezim.entity.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public class RegisterDto {
 
@@ -10,12 +11,15 @@ public class RegisterDto {
 
     @NotEmpty
     @Email
+    @Size(max = 50)
     private String email;
 
     @NotEmpty
+    @Size(max = 20)
     private String nickName;
 
     @NotEmpty
+    @Size(min = 6, max = 32)
     private String password;
 
     @NotEmpty

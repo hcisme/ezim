@@ -32,4 +32,15 @@ public class Constants {
      * robot
      */
     public static final String ROBOT_UID = UserContactTypeEnum.USER.getPrefix() + "robot";
+
+    /**
+     * 路径相关
+     */
+    public static final String FILE_FOLDER = "file/";
+
+    public static final String FILE_FOLDER_AVATAR_NAME = "avatar/";
+
+    public static final String IMAGE_SUFFIX = ".png";
+
+    public static final String COVER_IMAGE_SUFFIX = "_cover.png";
 }
