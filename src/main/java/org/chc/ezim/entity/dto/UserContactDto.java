@@ -49,6 +49,43 @@ public class UserContactDto extends BaseParam {
 
 	private String lastUpdateTimeEnd;
 
+	/**
+	 * 查询群组内用户信息
+	 */
+	private Boolean queryUserInfo;
+
+	/**
+	 * 查询用户群组信息
+	 */
+	private Boolean queryGroupInfo;
+
+	/**
+	 * 查询用户的好友信息
+	 */
+	private Boolean queryContactUserInfo;
+
+	/**
+	 * 是否排除我的群组 查出的是我加入的群组
+	 */
+	private Boolean excludeMyGroup;
+
+	private Integer[] statusArray;
+
+	public Integer[] getStatusArray() {
+		return statusArray;
+	}
+
+	public void setStatusArray(Integer[] statusArray) {
+		this.statusArray = statusArray;
+	}
+
+	public Boolean getExcludeMyGroup() {
+		return excludeMyGroup;
+	}
+
+	public void setExcludeMyGroup(Boolean excludeMyGroup) {
+		this.excludeMyGroup = excludeMyGroup;
+	}
 
 	public void setUserId(String userId){
 		this.userId = userId;
@@ -144,4 +181,27 @@ public class UserContactDto extends BaseParam {
 		return this.lastUpdateTimeEnd;
 	}
 
+	public Boolean getQueryUserInfo() {
+		return queryUserInfo;
+	}
+
+	public void setQueryUserInfo(Boolean queryUserInfo) {
+		this.queryUserInfo = queryUserInfo;
+	}
+
+	public Boolean getQueryGroupInfo() {
+		return queryGroupInfo;
+	}
+
+	public void setQueryGroupInfo(Boolean queryGroupInfo) {
+		this.queryGroupInfo = queryGroupInfo;
+	}
+
+	public Boolean getQueryContactUserInfo() {
+		return queryContactUserInfo;
+	}
+
+	public void setQueryContactUserInfo(Boolean queryContactUserInfo) {
+		this.queryContactUserInfo = queryContactUserInfo;
+	}
 }

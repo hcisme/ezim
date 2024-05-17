@@ -11,6 +11,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -37,7 +38,11 @@ public class AGlobalExceptionHandlerController extends ABaseController {
             ajaxResponse.setCode(biz.getCode() == null ? ResponseCodeEnum.CODE_600.getCode() : biz.getCode());
             ajaxResponse.setMsg(biz.getMessage());
             ajaxResponse.setStatus(STATUC_ERROR);
-        } else if (e instanceof BindException || e instanceof MethodArgumentTypeMismatchException) {
+        } else if (
+                e instanceof BindException ||
+                        e instanceof MethodArgumentTypeMismatchException ||
+                        e instanceof HandlerMethodValidationException
+        ) {
             var map = new HashMap<String, Object>();
             // 参数类型错误
             ajaxResponse.setCode(ResponseCodeEnum.CODE_600.getCode());

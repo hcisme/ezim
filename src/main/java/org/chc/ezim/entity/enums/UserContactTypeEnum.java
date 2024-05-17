@@ -8,7 +8,7 @@ import java.util.Arrays;
  * 用户之间关系
  */
 public enum UserContactTypeEnum {
-    USER(0, "U", "好友"),
+    USER(0, "U", "用户"),
     GROUP(1, "G", "群聊");
 
     private final Integer type;
@@ -44,9 +44,8 @@ public enum UserContactTypeEnum {
 
     /**
      * 通过名称获取对应枚举信息
-     * 
      */
-    public static UserContactTypeEnum getByName(String prefix) {
+    public static UserContactTypeEnum getByPrefix(String prefix) {
         try {
             if (StringTools.isEmpty(prefix) || prefix.trim().isEmpty()) {
                 return null;
@@ -59,5 +58,12 @@ public enum UserContactTypeEnum {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 通过名称获取对应枚举信息
+     */
+    public static UserContactTypeEnum getByType(Integer type) {
+        return Arrays.stream(UserContactTypeEnum.values()).filter(item -> item.getType().equals(type)).findFirst().orElse(null);
     }
 }

@@ -53,6 +53,11 @@ public class UserGroup implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 
+	/**
+	 * 成员数
+	 */
+	private Integer memberCount;
+
 	public UserGroup(String id, String groupName, String groupOwnerId, String groupNotice, Integer joinType) {
 		this.id = id;
 		this.groupName = groupName;
@@ -115,6 +120,14 @@ public class UserGroup implements Serializable {
 
 	public Date getCreateTime(){
 		return this.createTime;
+	}
+
+	public Integer getMemberCount() {
+		return memberCount;
+	}
+
+	public void setMemberCount(Integer memberCount) {
+		this.memberCount = memberCount;
 	}
 
 	@Override

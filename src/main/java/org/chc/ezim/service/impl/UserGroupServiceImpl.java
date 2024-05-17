@@ -72,7 +72,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         int count = this.findCountByParam(param);
         int pageSize = param.getPageSize() == null ? PageSize.SIZE15.getSize() : param.getPageSize();
 
-        SimplePage page = new SimplePage(param.getPageNo(), count, pageSize);
+        SimplePage page = new SimplePage(param.getPage(), count, pageSize);
         param.setSimplePage(page);
         List<UserGroup> list = this.findListByParam(param);
         PaginationResultVO<UserGroup> result = new PaginationResultVO(count, page.getPageSize(), page.getPageNo(),

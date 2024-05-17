@@ -1,6 +1,7 @@
 package org.chc.ezim.entity.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.chc.ezim.entity.enums.UserContactApplyStatusEnum;
+
 import java.io.Serializable;
 
 
@@ -10,113 +11,161 @@ import java.io.Serializable;
 public class UserContactApply implements Serializable {
 
 
-	/**
-	 * 自增ID
-	 */
-	private Integer id;
+    /**
+     * 自增ID
+     */
+    private Integer id;
 
-	/**
-	 * 申请人id
-	 */
-	private String applyUserId;
+    /**
+     * 申请人id
+     */
+    private String applyUserId;
 
-	/**
-	 * 接收人ID
-	 */
-	private String receiveUserId;
+    /**
+     * 接收人ID
+     */
+    private String receiveUserId;
 
-	/**
-	 * 联系人类型 0:好友 1:群组
-	 */
-	private Integer contactType;
+    /**
+     * 联系人类型 0:好友 1:群组
+     */
+    private Integer contactType;
 
-	/**
-	 * 联系人群组ID
-	 */
-	private String contactId;
+    /**
+     * 联系人群组ID
+     */
+    private String contactId;
 
-	/**
-	 * 状态 0:待处理 1:已同意 2:已拒绝 3:已拉黑
-	 */
-	private Integer status;
+    /**
+     * 状态 0:待处理 1:已同意 2:已拒绝 3:已拉黑
+     */
+    private Integer status;
 
-	/**
-	 * 申请信息
-	 */
-	private String applyInfo;
+    /**
+     * 申请信息
+     */
+    private String applyInfo;
 
-	/**
-	 * 最后申请时间
-	 */
-	private Long lastApplyTime;
+    /**
+     * 最后申请时间
+     */
+    private Long lastApplyTime;
 
+    private String contactName;
 
-	public void setId(Integer id){
-		this.id = id;
-	}
+    private String statusName;
 
-	public Integer getId(){
-		return this.id;
-	}
+    public UserContactApply() {
+    }
 
-	public void setApplyUserId(String applyUserId){
-		this.applyUserId = applyUserId;
-	}
+    public UserContactApply(String applyUserId, String receiveUserId, Integer contactType, String contactId, Integer status, String applyInfo, Long lastApplyTime) {
+        this.applyUserId = applyUserId;
+        this.receiveUserId = receiveUserId;
+        this.contactType = contactType;
+        this.contactId = contactId;
+        this.status = status;
+        this.applyInfo = applyInfo;
+        this.lastApplyTime = lastApplyTime;
+    }
 
-	public String getApplyUserId(){
-		return this.applyUserId;
-	}
+    public UserContactApply(Integer status, String applyInfo, Long lastApplyTime) {
+        this.status = status;
+        this.applyInfo = applyInfo;
+        this.lastApplyTime = lastApplyTime;
+    }
 
-	public void setReceiveUserId(String receiveUserId){
-		this.receiveUserId = receiveUserId;
-	}
+    public String getStatusName() {
+        UserContactApplyStatusEnum byStatus = UserContactApplyStatusEnum.getByStatus(status);
+        return byStatus == null ? null : byStatus.getDesc();
+    }
 
-	public String getReceiveUserId(){
-		return this.receiveUserId;
-	}
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
 
-	public void setContactType(Integer contactType){
-		this.contactType = contactType;
-	}
+    public String getContactName() {
+        return contactName;
+    }
 
-	public Integer getContactType(){
-		return this.contactType;
-	}
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
 
-	public void setContactId(String contactId){
-		this.contactId = contactId;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getContactId(){
-		return this.contactId;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setStatus(Integer status){
-		this.status = status;
-	}
+    public void setApplyUserId(String applyUserId) {
+        this.applyUserId = applyUserId;
+    }
 
-	public Integer getStatus(){
-		return this.status;
-	}
+    public String getApplyUserId() {
+        return this.applyUserId;
+    }
 
-	public void setApplyInfo(String applyInfo){
-		this.applyInfo = applyInfo;
-	}
+    public void setReceiveUserId(String receiveUserId) {
+        this.receiveUserId = receiveUserId;
+    }
 
-	public String getApplyInfo(){
-		return this.applyInfo;
-	}
+    public String getReceiveUserId() {
+        return this.receiveUserId;
+    }
 
-	public void setLastApplyTime(Long lastApplyTime){
-		this.lastApplyTime = lastApplyTime;
-	}
+    public void setContactType(Integer contactType) {
+        this.contactType = contactType;
+    }
 
-	public Long getLastApplyTime(){
-		return this.lastApplyTime;
-	}
+    public Integer getContactType() {
+        return this.contactType;
+    }
 
-	@Override
-	public String toString (){
-		return "自增ID:"+(id == null ? "空" : id)+"，申请人id:"+(applyUserId == null ? "空" : applyUserId)+"，接收人ID:"+(receiveUserId == null ? "空" : receiveUserId)+"，联系人类型 0:好友 1:群组:"+(contactType == null ? "空" : contactType)+"，联系人群组ID:"+(contactId == null ? "空" : contactId)+"，状态 0:待处理 1:已同意 2:已拒绝 3:已拉黑:"+(status == null ? "空" : status)+"，申请信息:"+(applyInfo == null ? "空" : applyInfo)+"，最后申请时间:"+(lastApplyTime == null ? "空" : lastApplyTime);
-	}
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
+
+    public String getContactId() {
+        return this.contactId;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getStatus() {
+        return this.status;
+    }
+
+    public void setApplyInfo(String applyInfo) {
+        this.applyInfo = applyInfo;
+    }
+
+    public String getApplyInfo() {
+        return this.applyInfo;
+    }
+
+    public void setLastApplyTime(Long lastApplyTime) {
+        this.lastApplyTime = lastApplyTime;
+    }
+
+    public Long getLastApplyTime() {
+        return this.lastApplyTime;
+    }
+
+    @Override
+    public String toString() {
+        return "UserContactApply{" +
+                "id=" + id +
+                ", applyUserId='" + applyUserId + '\'' +
+                ", receiveUserId='" + receiveUserId + '\'' +
+                ", contactType=" + contactType +
+                ", contactId='" + contactId + '\'' +
+                ", status=" + status +
+                ", applyInfo='" + applyInfo + '\'' +
+                ", lastApplyTime=" + lastApplyTime +
+                '}';
+    }
 }

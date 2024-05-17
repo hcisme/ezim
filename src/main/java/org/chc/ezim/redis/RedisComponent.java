@@ -26,12 +26,12 @@ public class RedisComponent {
         redisUtils.setValueAndExpire(
                 Constants.REDIS_KEY_WS_TOKEN + tokenUserInfoDto.getToken(),
                 tokenUserInfoDto,
-                Constants.REDIS_KEY_EXPIRES_DAY * 2
+                Constants.REDIS_KEY_EXPIRES_DAY * 10
         );
         redisUtils.setValueAndExpire(
                 Constants.REDIS_KEY_WS_TOKEN_USERID + tokenUserInfoDto.getId(),
                 tokenUserInfoDto,
-                Constants.REDIS_KEY_EXPIRES_DAY * 2
+                Constants.REDIS_KEY_EXPIRES_DAY * 10
         );
     }
 

@@ -43,4 +43,9 @@ public class Constants {
     public static final String IMAGE_SUFFIX = ".png";
 
     public static final String COVER_IMAGE_SUFFIX = "_cover.png";
+
+    /**
+     * 申请默认验证消息
+     */
+    public static final String APPLY_INFO_TEMPLATE = "我是 %s";
 }

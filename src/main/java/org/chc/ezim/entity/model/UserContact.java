@@ -50,6 +50,35 @@ public class UserContact implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date lastUpdateTime;
 
+	// 关联查询时用的字段
+	private String contactName;
+	private Integer sex;
+
+	private String groupOwnerId;
+
+	public String getGroupOwnerId() {
+		return groupOwnerId;
+	}
+
+	public void setGroupOwnerId(String groupOwnerId) {
+		this.groupOwnerId = groupOwnerId;
+	}
+
+	public String getContactName() {
+		return contactName;
+	}
+
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
 
 	public void setUserId(String userId){
 		this.userId = userId;

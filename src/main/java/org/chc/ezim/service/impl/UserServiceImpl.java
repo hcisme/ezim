@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         int count = this.findCountByParam(param);
         int pageSize = param.getPageSize() == null ? PageSize.SIZE15.getSize() : param.getPageSize();
 
-        SimplePage page = new SimplePage(param.getPageNo(), count, pageSize);
+        SimplePage page = new SimplePage(param.getPage(), count, pageSize);
         param.setSimplePage(page);
         List<User> list = this.findListByParam(param);
         PaginationResultVO<User> result = new PaginationResultVO(count, page.getPageSize(), page.getPageNo(), page.getPageTotal(), list);

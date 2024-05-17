@@ -6,24 +6,24 @@ import java.util.List;
 public class PaginationResultVO<T> {
 	private Integer totalCount;
 	private Integer pageSize;
-	private Integer pageNo;
+	private Integer page;
 	private Integer pageTotal;
 	private List<T> list = new ArrayList<T>();
 
-	public PaginationResultVO(Integer totalCount, Integer pageSize, Integer pageNo, List<T> list) {
+	public PaginationResultVO(Integer totalCount, Integer pageSize, Integer page, List<T> list) {
 		this.totalCount = totalCount;
 		this.pageSize = pageSize;
-		this.pageNo = pageNo;
+		this.page = page;
 		this.list = list;
 	}
 
-    public PaginationResultVO(Integer totalCount, Integer pageSize, Integer pageNo, Integer pageTotal, List<T> list) {
-        if (pageNo == 0) {
-            pageNo = 1;
+    public PaginationResultVO(Integer totalCount, Integer pageSize, Integer page, Integer pageTotal, List<T> list) {
+        if (page == 0) {
+            page = 1;
         }
         this.totalCount = totalCount;
         this.pageSize = pageSize;
-        this.pageNo = pageNo;
+        this.page = page;
         this.pageTotal = pageTotal;
         this.list = list;
     }
@@ -52,12 +52,12 @@ public class PaginationResultVO<T> {
 		this.pageSize = pageSize;
 	}
 
-	public Integer getPageNo() {
-		return pageNo;
+	public Integer getPage() {
+		return page;
 	}
 
-	public void setPageNo(Integer pageNo) {
-		this.pageNo = pageNo;
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 
 	public List<T> getList() {

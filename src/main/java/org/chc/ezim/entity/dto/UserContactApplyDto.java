@@ -56,6 +56,15 @@ public class UserContactApplyDto extends BaseParam {
 	 */
 	private Long lastApplyTime;
 
+	private Boolean queryContactInfo;
+
+	public Boolean getQueryContactInfo() {
+		return queryContactInfo;
+	}
+
+	public void setQueryContactInfo(Boolean queryContactInfo) {
+		this.queryContactInfo = queryContactInfo;
+	}
 
 	public void setId(Integer id){
 		this.id = id;

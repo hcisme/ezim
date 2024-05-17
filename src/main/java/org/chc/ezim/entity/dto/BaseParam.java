@@ -3,7 +3,7 @@ package org.chc.ezim.entity.dto;
 
 public class BaseParam {
 	private SimplePage simplePage;
-	private Integer pageNo;
+	private Integer page;
 	private Integer pageSize;
 	private String orderBy;
 	public SimplePage getSimplePage() {
@@ -14,12 +14,12 @@ public class BaseParam {
 		this.simplePage = simplePage;
 	}
 
-	public Integer getPageNo() {
-		return pageNo;
+	public Integer getPage() {
+		return page;
 	}
 
-	public void setPageNo(Integer pageNo) {
-		this.pageNo = pageNo;
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 
 	public Integer getPageSize() {
