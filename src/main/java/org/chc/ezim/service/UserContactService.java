@@ -2,6 +2,7 @@ package org.chc.ezim.service;
 
 import org.chc.ezim.entity.dto.TokenUserInfoDto;
 import org.chc.ezim.entity.dto.UserContactDto;
+import org.chc.ezim.entity.enums.UserContactStatusEnum;
 import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.entity.vo.UserContactSearchResultVO;
@@ -77,7 +78,17 @@ public interface UserContactService {
     UserContactSearchResultVO searchContact(String userId, String contactId);
 
     /**
-     * 添加为好友
+     * 处理申请添加为好友
      */
     Integer applyAdd(TokenUserInfoDto userInfo, String contactId, String applyInfo);
+
+    /**
+     * 删除联系人
+     */
+    void removeContactUser(String userId, String contactId, UserContactStatusEnum statusEnum);
+
+    /**
+     * 添加好友
+     */
+    void addContact(String applyUserId, String receiveUserId, String contactId, Integer contactType, String applyInfo);
 }

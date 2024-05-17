@@ -534,7 +534,7 @@
 				 last_off_time = #{bean.lastOffTime},
 			</if>
  		 </set>
- 		 where id=#{id}
+ 		 where id = #{id}
 	</update>
 
 	<!-- 根据Id删除-->

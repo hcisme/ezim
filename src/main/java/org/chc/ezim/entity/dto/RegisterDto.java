@@ -2,7 +2,9 @@ package org.chc.ezim.entity.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.chc.ezim.entity.constants.Constants;
 
 public class RegisterDto {
 
@@ -20,6 +22,7 @@ public class RegisterDto {
 
     @NotEmpty
     @Size(min = 6, max = 32)
+    @Pattern(regexp = Constants.REGEX_PASSWORD)
     private String password;
 
     @NotEmpty

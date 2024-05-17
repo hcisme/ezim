@@ -38,7 +38,7 @@ import java.util.UUID;
  */
 @RestController("userController")
 @RequestMapping("/user")
-public class UserController extends ABaseController {
+public class AdminUserController extends ABaseController {
 
     @Resource
     private UserService userService;

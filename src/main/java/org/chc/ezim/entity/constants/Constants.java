@@ -48,4 +48,10 @@ public class Constants {
      * 申请默认验证消息
      */
     public static final String APPLY_INFO_TEMPLATE = "我是 %s";
+
+    /**
+     * 密码正则
+     * <p> 密码必须是8到18个字符，至少包含一个数字，至少包含一个字母，可以包含特殊字符 ~!@#$%^&*_
+     */
+    public static final String REGEX_PASSWORD = "^(?=.*\\d)(?=.*[a-zA-Z])[\\da-zA-Z~!@#$%^&*_]{8,18}$";
 }

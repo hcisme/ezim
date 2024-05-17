@@ -16,6 +16,7 @@ import org.chc.ezim.mapper.UserContactApplyMapper;
 import org.chc.ezim.mapper.UserContactMapper;
 import org.chc.ezim.mapper.UserGroupMapper;
 import org.chc.ezim.mapper.UserMapper;
+import org.chc.ezim.redis.RedisComponent;
 import org.chc.ezim.service.UserContactApplyService;
 import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.utils.CopyTools;
@@ -23,6 +24,8 @@ import org.chc.ezim.utils.StringTools;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -39,13 +42,13 @@ public class UserContactServiceImpl implements UserContactService {
     private UserMapper<User, UserDto> userMapper;
 
     @Resource
+    private RedisComponent redisComponent;
+
+    @Resource
     private UserGroupMapper<UserGroup, UserGroupDto> userGroupMapper;
 
     @Resource
     private UserContactApplyMapper<UserContactApply, UserContactApplyDto> userContactApplyMapper;
-
-    @Resource
-    private UserContactApplyService userContactApplyService;
 
     /**
      * 根据条件查询列表
@@ -192,7 +195,7 @@ public class UserContactServiceImpl implements UserContactService {
     }
 
     /**
-     * 添加为好友
+     * 申请添加为联系人
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -248,7 +251,7 @@ public class UserContactServiceImpl implements UserContactService {
 
         // 直接加入不用记录申请
         if (JoinTypeEnum.JOIN.getType().equals(joinType)) {
-            userContactApplyService.addContact(
+            addContact(
                     applyUserId,
                     receiveUserId,
                     contactId,
@@ -288,5 +291,79 @@ public class UserContactServiceImpl implements UserContactService {
         }
 
         return null;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void removeContactUser(String userId, String contactId, UserContactStatusEnum statusEnum) {
+        // 移除好友 自己视角
+        UserContact userContact = new UserContact();
+        userContact.setStatus(statusEnum.getStatus());
+        userContactMapper.updateByUserIdAndContactId(userContact, userId, contactId);
+
+        // 将好友中自己移除  对方视角
+        UserContact friendContact = new UserContact();
+        if (UserContactStatusEnum.DEL == statusEnum) {
+            friendContact.setStatus(UserContactStatusEnum.DEL_BE.getStatus());
+        } else if (UserContactStatusEnum.BLACKLIST == statusEnum) {
+            friendContact.setStatus(UserContactStatusEnum.BLACKLIST_BE.getStatus());
+        } else {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        userContactMapper.updateByUserIdAndContactId(friendContact, contactId, userId);
+
+        // TODO 从我的好友列表缓存中删除好友
+
+        // TODO 从好友列表缓存中删除我
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addContact(String applyUserId, String receiveUserId, String contactId, Integer contactType, String applyInfo) {
+        Date date = new Date();
+        // 群聊人数
+        if (UserContactTypeEnum.GROUP.getType().equals(contactType)) {
+            UserContactDto userContactDto = new UserContactDto();
+            userContactDto.setContactId(contactId);
+            userContactDto.setStatus(UserContactStatusEnum.FRIEND.getStatus());
+            Integer count = userContactMapper.selectCount(userContactDto);
+            Integer maxGroupMemberCount = redisComponent.getSetting().getMaxGroupMemberCount();
+            if (count >= maxGroupMemberCount) {
+                throw new BusinessException("成员已满，无法加入");
+            }
+        }
+
+        // 同意 双方添加好友吧
+        ArrayList<UserContact> userContacts = new ArrayList<>();
+        // 申请人添加对方   群组直接就是添加一次就行(你添加群组 群组自动加你)
+        UserContact userContact = new UserContact();
+        userContact.setUserId(applyUserId);
+        userContact.setContactId(contactId);
+        userContact.setContactType(contactType);
+        userContact.setCreateTime(date);
+        userContact.setLastUpdateTime(date);
+        userContact.setStatus(UserContactStatusEnum.FRIEND.getStatus());
+        userContacts.add(userContact);
+
+        // 如果是申请好友 接受人添加申请人，  群组不用添加对方为好友
+        // 接受人添加申请人
+        if (UserContactTypeEnum.USER.getType().equals(contactType)) {
+            UserContact userContact1 = new UserContact();
+            userContact1.setUserId(receiveUserId);
+            userContact1.setContactId(applyUserId);
+            userContact1.setContactType(contactType);
+            userContact1.setCreateTime(date);
+            userContact1.setLastUpdateTime(date);
+            userContact1.setStatus(UserContactStatusEnum.FRIEND.getStatus());
+            userContacts.add(userContact1);
+        }
+
+        // userId 和 contactId 都相同才触发更新 否则就是插入数据
+        // 批量插入数据
+        userContactMapper.insertOrUpdateBatch(userContacts);
+
+        // TODO 如果是好友 接收人也添加申请人为好友  添加缓存
+
+        // TODO 创建会话
     }
 }

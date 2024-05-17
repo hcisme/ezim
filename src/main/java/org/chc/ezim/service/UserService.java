@@ -4,7 +4,9 @@ import org.chc.ezim.entity.dto.UserDto;
 import org.chc.ezim.entity.model.User;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.entity.vo.UserVo;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -98,4 +100,8 @@ public interface UserService {
      */
     UserVo login(String email, String password);
 
+    /**
+     * 更新童用户信息
+     */
+    void updateUserInfo(User user, MultipartFile avatarFile, MultipartFile avatarCover) throws IOException;
 }

@@ -9,15 +9,18 @@ import org.chc.ezim.entity.enums.PageSize;
 import org.chc.ezim.entity.enums.ResponseCodeEnum;
 import org.chc.ezim.entity.enums.UserContactStatusEnum;
 import org.chc.ezim.entity.enums.UserContactTypeEnum;
+import org.chc.ezim.entity.model.User;
 import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.model.UserContactApply;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.entity.vo.ResponseVO;
 import org.chc.ezim.entity.vo.UserContactSearchResultVO;
+import org.chc.ezim.entity.vo.UserVo;
 import org.chc.ezim.exception.BusinessException;
 import org.chc.ezim.service.UserContactApplyService;
 import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.service.UserService;
+import org.chc.ezim.utils.CopyTools;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +66,7 @@ public class UserContactController extends ABaseController {
     ) {
         TokenUserInfoDto userInfo = getTokenInfo(token);
 
-        Integer i = userContactService.applyAdd(userInfo, applyAddDto.contactId, applyAddDto.applyInfo);
+        userContactService.applyAdd(userInfo, applyAddDto.contactId, applyAddDto.applyInfo);
 
         return getSuccessResponseVO(null);
     }
@@ -89,7 +92,7 @@ public class UserContactController extends ABaseController {
     }
 
     /**
-     * 查看申请列表
+     * 处理申请
      */
     @GlobalAccessInterceptor
     @PutMapping("/dealWithApply")
@@ -102,7 +105,7 @@ public class UserContactController extends ABaseController {
     }
 
     /**
-     * 获取联系人
+     * 获取联系人列表
      */
     @GlobalAccessInterceptor
     @GetMapping("/getContactList")
@@ -118,13 +121,13 @@ public class UserContactController extends ABaseController {
         if (UserContactTypeEnum.USER.getType().equals(contactType)) {
             // 联系人
             userContactDto.setQueryContactUserInfo(true);
-        } else if (UserContactTypeEnum.GROUP.getType().equals(contactType)){
+        } else if (UserContactTypeEnum.GROUP.getType().equals(contactType)) {
             // 我加入的群组
             userContactDto.setQueryGroupInfo(true);
             userContactDto.setExcludeMyGroup(true);
         }
         userContactDto.setOrderBy("last_update_time desc");
-        userContactDto.setStatusArray(new Integer[] {
+        userContactDto.setStatusArray(new Integer[]{
                 UserContactStatusEnum.FRIEND.getStatus(),
                 UserContactStatusEnum.DEL_BE.getStatus(),
                 UserContactStatusEnum.BLACKLIST_BE.getStatus(),
@@ -133,5 +136,52 @@ public class UserContactController extends ABaseController {
         List<UserContact> listByParam = userContactService.findListByParam(userContactDto);
 
         return getSuccessResponseVO(listByParam);
+    }
+
+    /**
+     * 获取单个联系人详情（不是好友也可以获取）
+     */
+    @GlobalAccessInterceptor
+    @GetMapping("/getContactUserInfo")
+    public ResponseVO getContactUserInfo(@RequestHeader("token") String token, @NotNull String contactId) {
+        TokenUserInfoDto userInfo = getTokenInfo(token);
+
+        User user = userService.getUserById(contactId);
+        if (user == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+
+        UserVo userVo = CopyTools.copy(user, UserVo.class);
+        userVo.setContactStatus(UserContactStatusEnum.NOT_FRIEND.getStatus());
+
+        // 是否为好友
+        UserContact userContact = userContactService.getUserContactByUserIdAndContactId(userInfo.getId(), contactId);
+        if (userContact != null) {
+            userVo.setContactStatus(UserContactStatusEnum.FRIEND.getStatus());
+        }
+
+        return getSuccessResponseVO(userVo);
+    }
+
+    /**
+     * 删除联系人
+     */
+    @GlobalAccessInterceptor
+    @DeleteMapping("/delete/{contactId}")
+    public ResponseVO deleteContactUser(@RequestHeader("token") String token, @PathVariable String contactId) {
+        TokenUserInfoDto userInfo = getTokenInfo(token);
+        userContactService.removeContactUser(userInfo.getId(), contactId, UserContactStatusEnum.DEL);
+        return getSuccessResponseVO(null);
+    }
+
+    /**
+     * 拉黑联系人
+     */
+    @GlobalAccessInterceptor
+    @DeleteMapping("/addBlacklist/{contactId}")
+    public ResponseVO addBlacklist(@RequestHeader("token") String token, @PathVariable String contactId) {
+        TokenUserInfoDto userInfo = getTokenInfo(token);
+        userContactService.removeContactUser(userInfo.getId(), contactId, UserContactStatusEnum.BLACKLIST);
+        return getSuccessResponseVO(null);
     }
 }

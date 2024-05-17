@@ -21,7 +21,10 @@ import org.chc.ezim.utils.CopyTools;
 import org.chc.ezim.utils.StringTools;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -250,6 +253,34 @@ public class UserServiceImpl implements UserService {
         // TODO 查询我的群组
         // TODO 查询我的联系人
         return userVo;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateUserInfo(User user, MultipartFile avatarFile, MultipartFile avatarCover) throws IOException {
+        if (avatarFile != null) {
+            String baseFolder = appConfigProperties.getProjectFolder() + Constants.FILE_FOLDER;
+            File targetFileFolder = new File(baseFolder + Constants.FILE_FOLDER_AVATAR_NAME);
+            if (!targetFileFolder.exists()) {
+                targetFileFolder.mkdirs();
+            }
+            String avatarFilePath = targetFileFolder.getPath() + "/" + user.getId() + Constants.IMAGE_SUFFIX;
+            String avatarCoverPath = targetFileFolder.getPath() + "/" + user.getId() + Constants.COVER_IMAGE_SUFFIX;
+            avatarFile.transferTo(new File(avatarFilePath));
+            avatarFile.transferTo(new File(avatarCoverPath));
+        }
+
+        User lastUserInfo = userMapper.selectById(user.getId());
+
+        userMapper.updateById(user, user.getId());
+
+        // 更新联系人名称
+        String contactNameUpdate = null;
+        if (!lastUserInfo.getNickName().equals(user.getNickName())) {
+            contactNameUpdate = user.getNickName();
+        }
+
+        // TODO 更新会话中的昵称信息
     }
 
     private TokenUserInfoDto getTokenUserInfoDto(User user) {

@@ -4,20 +4,22 @@ import jakarta.annotation.Resource;
 import org.chc.ezim.entity.dto.SimplePage;
 import org.chc.ezim.entity.dto.UserContactApplyDto;
 import org.chc.ezim.entity.dto.UserContactDto;
-import org.chc.ezim.entity.enums.*;
+import org.chc.ezim.entity.enums.PageSize;
+import org.chc.ezim.entity.enums.ResponseCodeEnum;
+import org.chc.ezim.entity.enums.UserContactApplyStatusEnum;
+import org.chc.ezim.entity.enums.UserContactStatusEnum;
 import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.model.UserContactApply;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.exception.BusinessException;
 import org.chc.ezim.mapper.UserContactApplyMapper;
 import org.chc.ezim.mapper.UserContactMapper;
-import org.chc.ezim.redis.RedisComponent;
 import org.chc.ezim.service.UserContactApplyService;
+import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.utils.StringTools;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class UserContactApplyServiceImpl implements UserContactApplyService {
     private UserContactMapper<UserContact, UserContactDto> userContactMapper;
 
     @Resource
-    private RedisComponent redisComponent;
+    private UserContactService userContactService;
 
     /**
      * 根据条件查询列表
@@ -194,7 +196,7 @@ public class UserContactApplyServiceImpl implements UserContactApplyService {
 
         // 接受
         if (UserContactApplyStatusEnum.PASS == statusEnum) {
-            addContact(
+            userContactService.addContact(
                     applyInfo.getApplyUserId(),
                     applyInfo.getReceiveUserId(),
                     applyInfo.getContactId(),
@@ -217,55 +219,5 @@ public class UserContactApplyServiceImpl implements UserContactApplyService {
 
             userContactMapper.insertOrUpdate(userContact);
         }
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void addContact(String applyUserId, String receiveUserId, String contactId, Integer contactType, String applyInfo) {
-        Date date = new Date();
-        // 群聊人数
-        if (UserContactTypeEnum.GROUP.getType().equals(contactType)) {
-            UserContactDto userContactDto = new UserContactDto();
-            userContactDto.setContactId(contactId);
-            userContactDto.setStatus(UserContactStatusEnum.FRIEND.getStatus());
-            Integer count = userContactMapper.selectCount(userContactDto);
-            Integer maxGroupMemberCount = redisComponent.getSetting().getMaxGroupMemberCount();
-            if (count >= maxGroupMemberCount) {
-                throw new BusinessException("成员已满，无法加入");
-            }
-        }
-
-        // 同意 双方添加好友吧
-        ArrayList<UserContact> userContacts = new ArrayList<>();
-        // 申请人添加对方   群组直接就是添加一次就行(你添加群组 群组自动加你)
-        UserContact userContact = new UserContact();
-        userContact.setUserId(applyUserId);
-        userContact.setContactId(contactId);
-        userContact.setContactType(contactType);
-        userContact.setCreateTime(date);
-        userContact.setLastUpdateTime(date);
-        userContact.setStatus(UserContactStatusEnum.FRIEND.getStatus());
-        userContacts.add(userContact);
-
-        // 如果是申请好友 接受人添加申请人，  群组不用添加对方为好友
-        // 接受人添加申请人
-        if (UserContactTypeEnum.USER.getType().equals(contactType)) {
-            UserContact userContact1 = new UserContact();
-            userContact1.setUserId(receiveUserId);
-            userContact1.setContactId(applyUserId);
-            userContact1.setContactType(contactType);
-            userContact1.setCreateTime(date);
-            userContact1.setLastUpdateTime(date);
-            userContact1.setStatus(UserContactStatusEnum.FRIEND.getStatus());
-            userContacts.add(userContact1);
-        }
-
-        // userId 和 contactId 都相同才触发更新 否则就是插入数据
-        // 批量插入数据
-        userContactMapper.insertOrUpdateBatch(userContacts);
-
-        // TODO 如果是好友 接收人也添加申请人为好友  添加缓存
-
-        // TODO 创建会话
     }
 }
