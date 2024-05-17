@@ -54,7 +54,28 @@ public class UserGroupDto extends BaseParam {
 
 	private String createTimeEnd;
 
+
+	private Boolean queryGroupOwnerName;
+	private Boolean queryMemebrCount;
+
+
 	public UserGroupDto() {
+	}
+
+	public Boolean getQueryGroupOwnerName() {
+		return queryGroupOwnerName;
+	}
+
+	public void setQueryGroupOwnerName(Boolean queryGroupOwnerName) {
+		this.queryGroupOwnerName = queryGroupOwnerName;
+	}
+
+	public Boolean getQueryMemebrCount() {
+		return queryMemebrCount;
+	}
+
+	public void setQueryMemebrCount(Boolean queryMemebrCount) {
+		this.queryMemebrCount = queryMemebrCount;
 	}
 
 	public UserGroupDto(String id) {

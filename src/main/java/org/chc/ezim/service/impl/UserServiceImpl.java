@@ -283,6 +283,23 @@ public class UserServiceImpl implements UserService {
         // TODO 更新会话中的昵称信息
     }
 
+    @Override
+    public void updateUserStatus(Integer status, String userId) {
+        UserStatusEnum statusEnum = UserStatusEnum.getByStatus(status);
+        if (statusEnum == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+
+        User user = new User();
+        user.setStatus(statusEnum.getStatus());
+        userMapper.updateById(user, userId);
+    }
+
+    @Override
+    public void forceOffLine(String userId) {
+        // TODO 强制下线
+    }
+
     private TokenUserInfoDto getTokenUserInfoDto(User user) {
         TokenUserInfoDto tokenUserInfoDto = new TokenUserInfoDto(null, user.getId(), user.getNickName(), null);
 

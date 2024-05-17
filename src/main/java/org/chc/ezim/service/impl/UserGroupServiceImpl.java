@@ -7,10 +7,7 @@ import org.chc.ezim.entity.dto.SettingDto;
 import org.chc.ezim.entity.dto.SimplePage;
 import org.chc.ezim.entity.dto.UserContactDto;
 import org.chc.ezim.entity.dto.UserGroupDto;
-import org.chc.ezim.entity.enums.PageSize;
-import org.chc.ezim.entity.enums.ResponseCodeEnum;
-import org.chc.ezim.entity.enums.UserContactStatusEnum;
-import org.chc.ezim.entity.enums.UserContactTypeEnum;
+import org.chc.ezim.entity.enums.*;
 import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.model.UserGroup;
 import org.chc.ezim.entity.vo.PaginationResultVO;
@@ -218,5 +215,37 @@ public class UserGroupServiceImpl implements UserGroupService {
             // TODO 更新相关表冗余信息
             // TODO 修改群昵称后 发送 ws 消息
         }
+    }
+
+    /**
+     * 解散群
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void dissolve(String groupOwnerId, String groupId) {
+        UserGroup dbGroupInfo = userGroupMapper.selectById(groupId);
+        if (dbGroupInfo == null || !dbGroupInfo.getGroupOwnerId().equals(groupOwnerId)) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+
+        // 删除  改变群组状态 为 解散
+        UserGroup group = new UserGroup();
+        group.setStatus(GroupStatusEnum.DISSOLUTION.getStatus());
+        userGroupMapper.updateById(group, groupId);
+
+        // 更新联系人信息
+        UserContactDto userContactDto = new UserContactDto();
+        // 更新的条件   是群组 且 群组id相同
+        userContactDto.setContactId(groupId);
+        userContactDto.setContactType(UserContactTypeEnum.GROUP.getType());
+        // 更新的内容
+        UserContact updateUserContact = new UserContact();
+        updateUserContact.setStatus(UserContactStatusEnum.DEL.getStatus());
+
+        userContactMapper.updateByParam(updateUserContact, userContactDto);
+
+        // TODO 移除相关群员的联系人缓存
+
+        // TODO 发消息 1.更新会话信息 2.记录群消息 3.发送群解散通知
     }
 }

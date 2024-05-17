@@ -101,7 +101,17 @@ public interface UserService {
     UserVo login(String email, String password);
 
     /**
-     * 更新童用户信息
+     * 更新用户信息
      */
     void updateUserInfo(User user, MultipartFile avatarFile, MultipartFile avatarCover) throws IOException;
+
+    /**
+     * 更新用户状态
+     */
+    void updateUserStatus(Integer status, String userId);
+
+    /**
+     * 强制用户下线
+     */
+    void forceOffLine(String userId);
 }

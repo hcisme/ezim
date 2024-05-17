@@ -58,12 +58,28 @@ public class UserGroup implements Serializable {
 	 */
 	private Integer memberCount;
 
+	/**
+	 * 群主名字
+	 */
+	private String groupOwnerNickName;
+
+	public UserGroup() {
+	}
+
 	public UserGroup(String id, String groupName, String groupOwnerId, String groupNotice, Integer joinType) {
 		this.id = id;
 		this.groupName = groupName;
 		this.groupOwnerId = groupOwnerId;
 		this.groupNotice = groupNotice;
 		this.joinType = joinType;
+	}
+
+	public String getGroupOwnerNickName() {
+		return groupOwnerNickName;
+	}
+
+	public void setGroupOwnerNickName(String groupOwnerNickName) {
+		this.groupOwnerNickName = groupOwnerNickName;
 	}
 
 	public void setId(String id){

@@ -7,7 +7,7 @@
 	<resultMap id="base_result_map" type="UserBeauty">
 		<!--自增id-->
 		<result column="id" property="id"  />
-		<!--已存在的 用户id-->
+		<!--用户靓号id-->
 		<result column="user_id" property="userId"  />
 		<!--邮箱-->
 		<result column="email" property="email"  />

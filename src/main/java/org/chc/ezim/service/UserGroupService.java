@@ -73,4 +73,5 @@ public interface UserGroupService {
 
     void createOrUpdateGroup(UserGroup userGroup, MultipartFile avatarFile, MultipartFile avatarCover) throws IOException;
 
+    void dissolve(String groupOwnerId, String groupId);
 }

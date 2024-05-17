@@ -1,12 +1,18 @@
 package org.chc.ezim.service.impl;
 
 import jakarta.annotation.Resource;
-import org.chc.ezim.entity.enums.PageSize;
-import org.chc.ezim.entity.model.UserBeauty;
 import org.chc.ezim.entity.dto.SimplePage;
 import org.chc.ezim.entity.dto.UserBeautyDto;
+import org.chc.ezim.entity.dto.UserDto;
+import org.chc.ezim.entity.enums.BeautyAccountStatusEnum;
+import org.chc.ezim.entity.enums.PageSize;
+import org.chc.ezim.entity.enums.ResponseCodeEnum;
+import org.chc.ezim.entity.model.User;
+import org.chc.ezim.entity.model.UserBeauty;
 import org.chc.ezim.entity.vo.PaginationResultVO;
+import org.chc.ezim.exception.BusinessException;
 import org.chc.ezim.mapper.UserBeautyMapper;
+import org.chc.ezim.mapper.UserMapper;
 import org.chc.ezim.service.UserBeautyService;
 import org.chc.ezim.utils.StringTools;
 import org.springframework.stereotype.Service;
@@ -22,6 +28,9 @@ public class UserBeautyServiceImpl implements UserBeautyService {
 
     @Resource
     private UserBeautyMapper<UserBeauty, UserBeautyDto> userBeautyMapper;
+
+    @Resource
+    private UserMapper<User, UserDto> userMapper;
 
     /**
      * 根据条件查询列表
@@ -172,5 +181,53 @@ public class UserBeautyServiceImpl implements UserBeautyService {
     @Override
     public Integer deleteUserBeautyByEmail(String email) {
         return this.userBeautyMapper.deleteByEmail(email);
+    }
+
+    @Override
+    public void saveUserBeautyAccount(UserBeauty userBeauty) {
+        if (userBeauty.getId() != null) {
+            UserBeauty dbInfo = userBeautyMapper.selectById(userBeauty.getId());
+
+            // 已使用 不准修改
+            if (BeautyAccountStatusEnum.USED.getStatus().equals(dbInfo.getStatus())) {
+                throw new BusinessException(ResponseCodeEnum.CODE_600);
+            }
+        }
+
+        UserBeauty dbInfo = userBeautyMapper.selectByEmail(userBeauty.getEmail());
+        // 新增的时候判断邮箱是否存在
+        if (dbInfo != null && userBeauty.getId() == null) {
+            throw new BusinessException("靓号邮箱已存在");
+        }
+        // 修改的时候判断邮箱是否存在
+        if (dbInfo != null && userBeauty.getId() != null && dbInfo.getId() != null && !userBeauty.getId().equals(dbInfo.getId())) {
+            throw new BusinessException("靓号邮箱已存在");
+        }
+
+        // 判断靓号是否存在
+        dbInfo = userBeautyMapper.selectByUserId(userBeauty.getUserId());
+        if (dbInfo != null && userBeauty.getId() == null) {
+            throw new BusinessException("靓号已存在");
+        }
+        if (dbInfo != null && userBeauty.getId() != null && dbInfo.getId() != null && !userBeauty.getId().equals(dbInfo.getId())) {
+            throw new BusinessException("靓号已存在");
+        }
+
+        // 判断邮箱是否已经注册
+        User user = userMapper.selectByEmail(userBeauty.getEmail());
+        if (user != null) {
+            throw new BusinessException("靓号邮箱已经被注册");
+        }
+        user = userMapper.selectById(userBeauty.getUserId());
+        if (user != null) {
+            throw new BusinessException("靓号已经被注册");
+        }
+
+        if (userBeauty.getId() != null) {
+            userBeautyMapper.updateById(userBeauty, userBeauty.getId());
+        } else {
+            userBeauty.setStatus(BeautyAccountStatusEnum.NO_USE.getStatus());
+            userBeautyMapper.insert(userBeauty);
+        }
     }
 }
