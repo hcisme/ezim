@@ -14,11 +14,19 @@ public class Constants {
 
     public static final String REDIS_KEY_WS_TOKEN_USERID = "ezim:ws:token:userid:";
 
-    public static final String REDIS_KEY_SYS_SETTING = "ezim:sys:setting:";
+    public static final String REDIS_KEY_SYS_SETTING = "ezim:sys:setting";
 
     public static final Integer REDIS_TIME_1MIN = 60;
 
+    // TODO
+    public static final Integer REDIS_KEY_EXPIRES_HEART_BEAT = 6 * 60;
+
     public static final Integer REDIS_KEY_EXPIRES_DAY = REDIS_TIME_1MIN * 60 * 24;
+
+    /**
+     * token 失效时间 2天
+     */
+    public static final Integer REDIS_KEY_TOKEN_EXPIRES = REDIS_KEY_EXPIRES_DAY * 2;
 
 
     /**
@@ -38,6 +46,10 @@ public class Constants {
      */
     public static final String FILE_FOLDER = "file/";
 
+    public static final String APP_UPDATE_FOLDER = "app/";
+
+    public static final String APP_APK_SUFFIX = ".apk";
+
     public static final String FILE_FOLDER_AVATAR_NAME = "avatar/";
 
     public static final String IMAGE_SUFFIX = ".png";
@@ -54,4 +66,11 @@ public class Constants {
      * <p> 密码必须是8到18个字符，至少包含一个数字，至少包含一个字母，可以包含特殊字符 ~!@#$%^&*_
      */
     public static final String REGEX_PASSWORD = "^(?=.*\\d)(?=.*[a-zA-Z])[\\da-zA-Z~!@#$%^&*_]{8,18}$";
+
+    public static final String APP_NAME = "Ezim";
+
+    /**
+     * 用户联系人列表的key
+     */
+    public static final String REDIS_KEY_USER_CONTACT = "ezim:ws:user:contact:";
 }

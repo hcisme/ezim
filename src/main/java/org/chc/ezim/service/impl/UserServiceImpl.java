@@ -3,22 +3,22 @@ package org.chc.ezim.service.impl;
 import jakarta.annotation.Resource;
 import org.chc.ezim.entity.config.AppConfigProperties;
 import org.chc.ezim.entity.constants.Constants;
-import org.chc.ezim.entity.dto.SimplePage;
-import org.chc.ezim.entity.dto.TokenUserInfoDto;
-import org.chc.ezim.entity.dto.UserBeautyDto;
-import org.chc.ezim.entity.dto.UserDto;
+import org.chc.ezim.entity.dto.*;
 import org.chc.ezim.entity.enums.*;
 import org.chc.ezim.entity.model.User;
 import org.chc.ezim.entity.model.UserBeauty;
+import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.entity.vo.UserVo;
 import org.chc.ezim.exception.BusinessException;
 import org.chc.ezim.mapper.UserBeautyMapper;
+import org.chc.ezim.mapper.UserContactMapper;
 import org.chc.ezim.mapper.UserMapper;
 import org.chc.ezim.redis.RedisComponent;
 import org.chc.ezim.service.UserService;
 import org.chc.ezim.utils.CopyTools;
 import org.chc.ezim.utils.StringTools;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserBeautyMapper<UserBeauty, UserBeautyDto> userBeautyMapper;
+    @Autowired
+    private UserContactMapper userContactMapper;
 
     /**
      * 根据条件查询列表
@@ -234,6 +236,19 @@ public class UserServiceImpl implements UserService {
         if (user.getStatus().equals(UserStatusEnum.DISABLE.getStatus())) {
             throw new BusinessException("账号已禁用");
         }
+
+        // TODO 查询我的群组
+        // 查询我的联系人 加到 redis 缓存
+        UserContactDto userContactDto = new UserContactDto();
+        userContactDto.setUserId(user.getId());
+        userContactDto.setStatus(UserContactStatusEnum.FRIEND.getStatus());
+        List<UserContact> contactList = userContactMapper.selectList(userContactDto);
+        List<String> contactIdList = contactList.stream().map(UserContact::getContactId).toList();
+        redisComponent.cleanUserContact(user.getId());
+        if (!contactIdList.isEmpty()) {
+            redisComponent.addUserContactBatch(user.getId(), contactIdList);
+        }
+
         Long userHeartBeat = redisComponent.getUserHeartBeat(user.getId());
         if (userHeartBeat != null) {
             throw new BusinessException("此账号已在别处登录，请退出后重试");
@@ -249,9 +264,6 @@ public class UserServiceImpl implements UserService {
         userVo.setToken(tokenUserInfoDto.getToken());
         userVo.setAdmin(tokenUserInfoDto.getAdmin());
 
-
-        // TODO 查询我的群组
-        // TODO 查询我的联系人
         return userVo;
     }
 
@@ -267,7 +279,7 @@ public class UserServiceImpl implements UserService {
             String avatarFilePath = targetFileFolder.getPath() + "/" + user.getId() + Constants.IMAGE_SUFFIX;
             String avatarCoverPath = targetFileFolder.getPath() + "/" + user.getId() + Constants.COVER_IMAGE_SUFFIX;
             avatarFile.transferTo(new File(avatarFilePath));
-            avatarFile.transferTo(new File(avatarCoverPath));
+            avatarCover.transferTo(new File(avatarCoverPath));
         }
 
         User lastUserInfo = userMapper.selectById(user.getId());

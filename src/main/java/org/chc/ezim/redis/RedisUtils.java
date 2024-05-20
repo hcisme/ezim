@@ -125,7 +125,7 @@ public class RedisUtils<V> {
         }
     }
 
-    public boolean lPush(String key, V value, long time) {
+    public boolean IPush(String key, V value, long time) {
         try {
             redisConfigTemplate.opsForList().rightPush(key, value);
             if (time > 0) {
@@ -138,7 +138,7 @@ public class RedisUtils<V> {
         }
     }
 
-    public boolean lPush(String key, List<V> values, long time) {
+    public boolean IPush(String key, List<V> values, long time) {
         try {
             redisConfigTemplate.opsForList().rightPushAll(key, values);
             if (time > 0) {
