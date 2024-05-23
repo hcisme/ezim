@@ -1,10 +1,14 @@
 package org.chc.ezim.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.chc.ezim.entity.dto.ChatMessageDto;
+import org.chc.ezim.entity.dto.MessageSendDto;
+import org.chc.ezim.entity.dto.TokenUserInfoDto;
 import org.chc.ezim.entity.model.ChatMessage;
 import org.chc.ezim.entity.vo.PaginationResultVO;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -69,4 +73,9 @@ public interface ChatMessageService {
 	 */
 	Integer deleteChatMessageById(Long id);
 
+	MessageSendDto saveMessage(ChatMessage chatMessage, TokenUserInfoDto tokenUserInfoDto);
+
+	void saveMessageFile(String userId, Long messageId, MultipartFile file, MultipartFile cover);
+
+	File downloadFile(TokenUserInfoDto tokenUserInfoDto, Long fileId, Boolean showCover);
 }

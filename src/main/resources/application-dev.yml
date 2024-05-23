@@ -7,6 +7,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/ezim?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&allowMultiQueries=true
     username: root
     password: emmmm000
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     redis:

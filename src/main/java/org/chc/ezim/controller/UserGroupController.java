@@ -9,6 +9,7 @@ import org.chc.ezim.entity.dto.UserContactDto;
 import org.chc.ezim.entity.dto.UserGroupDto;
 import org.chc.ezim.entity.dto.UserGroupQueryDto;
 import org.chc.ezim.entity.enums.GroupStatusEnum;
+import org.chc.ezim.entity.enums.SendMessageTypeEnum;
 import org.chc.ezim.entity.enums.UserContactStatusEnum;
 import org.chc.ezim.entity.model.UserContact;
 import org.chc.ezim.entity.model.UserGroup;
@@ -127,6 +128,47 @@ public class UserGroupController extends ABaseController {
         UserGroupVO userGroupVO = new UserGroupVO(userGroup, list);
 
         return getSuccessResponseVO(userGroupVO);
+    }
+
+    /**
+     * 添加或移除群组成员
+     */
+    @GlobalAccessInterceptor
+    @PostMapping("/addOrRemoveGroupUser")
+    public ResponseVO addOrRemoveGroupUser(
+            @RequestHeader("token") String token,
+            @NotEmpty String groupId,
+            @NotEmpty String selectContactId,
+            @NotNull Integer opType
+    ) {
+        TokenUserInfoDto tokenInfo = getTokenInfo(token);
+        userGroupService.addOrRemoveGroupUser(tokenInfo, groupId, selectContactId, opType);
+
+        return getSuccessResponseVO(null);
+    }
+
+    /**
+     * 退出群聊
+     */
+    @GlobalAccessInterceptor
+    @PostMapping("/leaveGroup")
+    public ResponseVO leaveGroup(@RequestHeader("token") String token, @NotEmpty String groupId) {
+        TokenUserInfoDto tokenInfo = getTokenInfo(token);
+        userGroupService.leaveGroup(tokenInfo.getId(), groupId, SendMessageTypeEnum.LEAVE_GROUP);
+
+        return getSuccessResponseVO(null);
+    }
+
+    /**
+     * 解散群聊
+     */
+    @GlobalAccessInterceptor
+    @PostMapping("/dissolutionGroup")
+    public ResponseVO dissolutionGroup(@RequestHeader("token") String token, @NotEmpty String groupId) {
+        TokenUserInfoDto tokenInfo = getTokenInfo(token);
+        userGroupService.dissolve(tokenInfo.getId(), groupId);
+
+        return getSuccessResponseVO(null);
     }
 
     private UserGroup getGroupDetail(String token, String groupId) {

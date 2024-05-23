@@ -23,16 +23,16 @@
 
 	<sql id="base_condition_filed">
 		<if test="query.userId != null and query.userId!=''">
-			 and  user_id = #{query.userId}
+			 and  u.user_id = #{query.userId}
 		</if>
 		<if test="query.contactId != null and query.contactId!=''">
-			 and  contact_id = #{query.contactId}
+			 and  u.contact_id = #{query.contactId}
 		</if>
 		<if test="query.sessionId != null and query.sessionId!=''">
-			 and  session_id = #{query.sessionId}
+			 and  u.session_id = #{query.sessionId}
 		</if>
 		<if test="query.contactName != null and query.contactName!=''">
-			 and  contact_name = #{query.contactName}
+			 and  u.contact_name = #{query.contactName}
 		</if>
 	</sql>
 
@@ -41,34 +41,45 @@
 		<where>
 			<include refid="base_condition_filed" />
 			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
-				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
+				 and  u.user_id like concat('%', #{query.userIdFuzzy}, '%')
 			</if>
 			<if test="query.contactIdFuzzy!= null  and query.contactIdFuzzy!=''">
-				 and  contact_id like concat('%', #{query.contactIdFuzzy}, '%')
+				 and  u.contact_id like concat('%', #{query.contactIdFuzzy}, '%')
 			</if>
 			<if test="query.sessionIdFuzzy!= null  and query.sessionIdFuzzy!=''">
-				 and  session_id like concat('%', #{query.sessionIdFuzzy}, '%')
+				 and  u.session_id like concat('%', #{query.sessionIdFuzzy}, '%')
 			</if>
 			<if test="query.contactNameFuzzy!= null  and query.contactNameFuzzy!=''">
-				 and  contact_name like concat('%', #{query.contactNameFuzzy}, '%')
+				 and  u.contact_name like concat('%', #{query.contactNameFuzzy}, '%')
 			</if>
 		</where>
 	</sql>
 
 	<!-- 查询集合-->
-	<select id="selectList" resultMap="base_result_map" >
-		 SELECT <include refid="base_column_list" /> FROM chat_session_user <include refid="query_condition" />
-		 <if test="query.orderBy!=null">
-			 order by ${query.orderBy}
-		 </if>
-		 <if test="query.simplePage!=null">
-			 limit #{query.simplePage.start},#{query.simplePage.end}
-		 </if>
-	</select>
+	<select id="selectList" resultType="ChatSessionUser" >
+        SELECT
+        u.*,
+        c.last_message,
+        c.last_receive_time,
+        case when SUBSTRING(contact_id, 1 ,1)='G'
+        then (select count(1) from user_contact uc where uc.contact_id=u.contact_id)
+        else 0
+        end memeberCount
+        FROM chat_session_user u
+        inner join chat_session c
+        on c.id = u.session_id
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
 
 	<!-- 查询数量-->
 	<select id="selectCount" resultType="java.lang.Integer" >
-		 SELECT count(1) FROM chat_session_user <include refid="query_condition" />
+		 SELECT count(1) FROM chat_session_user u <include refid="query_condition" />
 	</select>
 
 	<!-- 插入 （匹配有值的字段）-->
@@ -195,7 +206,7 @@
 
 	<!--多条件修改-->
 	<update id="updateByParam" parameterType="ChatSessionUserDto">
-		 UPDATE chat_session_user
+		 UPDATE chat_session_user u
  		 <set> 
 			<if test="bean.userId != null">
 				 user_id = #{bean.userId},
@@ -215,7 +226,7 @@
 
 	<!--多条件删除-->
 	<delete id="deleteByParam">
-		 delete from chat_session_user
+		 delete from chat_session_user u
  		 <include refid="query_condition" />
 	</delete>
 

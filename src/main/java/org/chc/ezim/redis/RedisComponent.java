@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.chc.ezim.entity.constants.Constants;
 import org.chc.ezim.entity.dto.SettingDto;
 import org.chc.ezim.entity.dto.TokenUserInfoDto;
+import org.chc.ezim.utils.StringTools;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,10 +34,35 @@ public class RedisComponent {
     }
 
     /**
+     * 移除心跳
+     */
+    public void removeUserHeartBeat(String userId) {
+        redisUtils.delete(Constants.REDIS_KEY_WS_USER_HEART_BEAT + userId);
+    }
+
+    /**
      * 通过 token 获取用户信息
      */
-    public TokenUserInfoDto getUserInfo(String token) {
+    public TokenUserInfoDto getUserInfoByToken(String token) {
         return (TokenUserInfoDto) redisUtils.getValue(Constants.REDIS_KEY_WS_TOKEN + token);
+    }
+
+    /**
+     * 通过 token 获取用户信息
+     */
+    public TokenUserInfoDto getUserInfoByUserId(String userId) {
+        return (TokenUserInfoDto) redisUtils.getValue(Constants.REDIS_KEY_WS_TOKEN_USERID + userId);
+    }
+
+    /**
+     * 清空指定用户的 token
+     */
+    public void cleanTokenByUserId(String userId) {
+        String token = ((TokenUserInfoDto) redisUtils.getValue(Constants.REDIS_KEY_WS_TOKEN_USERID + userId)).getToken();
+        if (!StringTools.isEmpty(token)) {
+            redisUtils.delete(Constants.REDIS_KEY_WS_TOKEN + token);
+        }
+        redisUtils.delete(Constants.REDIS_KEY_WS_TOKEN_USERID + userId);
     }
 
     /**
@@ -72,16 +98,35 @@ public class RedisComponent {
     }
 
     /**
-     * 批量添加联系人到redis
+     * 批量添加联系人到 redis
      */
     public void addUserContactBatch(String userId, List<String> contactIdList) {
         redisUtils.IPush(Constants.REDIS_KEY_USER_CONTACT + userId, contactIdList, Constants.REDIS_KEY_TOKEN_EXPIRES);
     }
 
     /**
+     * 单独添加联系人到 redis
+     */
+    public void addSingleUserContact(String userId, String contactId) {
+        List<String> userContactIdList = getUserContactIdList(userId);
+        if (userContactIdList.contains(contactId)) {
+            return;
+        }
+
+        redisUtils.IPush(Constants.REDIS_KEY_USER_CONTACT + userId, contactId, Constants.REDIS_KEY_TOKEN_EXPIRES);
+    }
+
+    /**
      * 获取当前用户的联系人id列表
      */
     public List<String> getUserContactIdList(String userId) {
-        return (List<String>) redisUtils.getValue(Constants.REDIS_KEY_USER_CONTACT + userId);
+        return (List<String>) redisUtils.getQueueList(Constants.REDIS_KEY_USER_CONTACT + userId);
+    }
+
+    /**
+     * 删除联系人
+     */
+    public void removeUserContact(String userId, String contactId) {
+        redisUtils.remove(Constants.REDIS_KEY_USER_CONTACT + userId, contactId);
     }
 }

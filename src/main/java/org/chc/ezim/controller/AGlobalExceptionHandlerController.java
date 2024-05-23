@@ -33,9 +33,8 @@ public class AGlobalExceptionHandlerController extends ABaseController {
             ajaxResponse.setCode(ResponseCodeEnum.CODE_404.getCode());
             ajaxResponse.setMsg(ResponseCodeEnum.CODE_404.getMsg());
             ajaxResponse.setStatus(STATUC_ERROR);
-        } else if (e instanceof BusinessException) {
+        } else if (e instanceof BusinessException biz) {
             // 业务错误
-            BusinessException biz = (BusinessException) e;
             ajaxResponse.setCode(biz.getCode() == null ? ResponseCodeEnum.CODE_600.getCode() : biz.getCode());
             ajaxResponse.setMsg(biz.getMessage());
             ajaxResponse.setStatus(STATUC_ERROR);

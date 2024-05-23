@@ -25,6 +25,7 @@ import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.service.UserService;
 import org.chc.ezim.utils.CopyTools;
 import org.chc.ezim.utils.StringTools;
+import org.chc.ezim.websocket.ChannelContextUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +52,9 @@ public class UserController extends ABaseController {
 
     @Resource
     private RedisComponent redisComponent;
+
+    @Resource
+    private ChannelContextUtils channelContextUtils;
 
     /**
      * 验证码
@@ -173,7 +177,7 @@ public class UserController extends ABaseController {
     @PutMapping("/userInfo")
     public ResponseVO putUserInfo(
             @RequestHeader("token") String token,
-            @RequestBody User user,
+            @ModelAttribute User user,
             @RequestPart(value = "avatarFile", required = false) MultipartFile avatarFile,
             @RequestPart(value = "avatarCover", required = false) MultipartFile avatarCover
     ) throws IOException {
@@ -204,7 +208,8 @@ public class UserController extends ABaseController {
         user.setPassword(StringTools.encodeMd5(password));
         userService.updateUserById(user, userInfo.getId());
 
-        // TODO 强制退出 重新登录
+        // 强制退出 重新登录
+        channelContextUtils.closeContext(userInfo.getId());
         return getSuccessResponseVO(null);
     }
 
@@ -216,7 +221,8 @@ public class UserController extends ABaseController {
     public ResponseVO logout(@RequestHeader("token") String token) {
         TokenUserInfoDto userInfo = getTokenInfo(token);
 
-        // TODO 退出登录 关闭 ws 连接
+        // 退出登录 关闭 ws 连接
+        channelContextUtils.closeContext(userInfo.getId());
         return getSuccessResponseVO(null);
     }
 }

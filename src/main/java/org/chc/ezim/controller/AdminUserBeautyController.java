@@ -8,7 +8,6 @@ import org.chc.ezim.entity.model.UserBeauty;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.chc.ezim.entity.vo.ResponseVO;
 import org.chc.ezim.service.UserBeautyService;
-import org.chc.ezim.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,9 +19,6 @@ public class AdminUserBeautyController extends ABaseController {
 
     @Resource
     private UserBeautyService userBeautyService;
-
-    @Resource
-    private UserService userService;
 
     /**
      * 获取靓号列表

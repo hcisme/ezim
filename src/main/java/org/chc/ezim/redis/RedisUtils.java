@@ -35,7 +35,6 @@ public class RedisUtils<V> {
      * @param value 值
      * @return true成功 false失败
      */
-
     public boolean setValue(String key, V value) {
         try {
             redisConfigTemplate.opsForValue().set(key, value);

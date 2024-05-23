@@ -2,12 +2,14 @@ package org.chc.ezim.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.chc.ezim.entity.constants.Constants;
 import org.chc.ezim.entity.enums.UserContactTypeEnum;
 import org.chc.ezim.exception.BusinessException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class StringTools {
 
@@ -50,10 +52,7 @@ public class StringTools {
     public static boolean isEmpty(String str) {
         if (null == str || "".equals(str) || "null".equals(str) || "\u0000".equals(str)) {
             return true;
-        } else if ("".equals(str.trim())) {
-            return true;
-        }
-        return false;
+        } else return "".equals(str.trim());
     }
 
     public static String getUserId() {
@@ -74,5 +73,43 @@ public class StringTools {
 
     public static String encodeMd5(String originString) {
         return StringTools.isEmpty(originString) ? null : DigestUtils.md5Hex(originString);
+    }
+
+    public static String cleanHtmlTag(String content) {
+        if (isEmpty(content)) {
+            return content;
+        }
+
+        return content
+                .replace("<", "&lt;")
+                .replace("\n\r", "<br>")
+                .replace("\n", "<br>");
+    }
+
+    public static String generatorChatSessionId4User(String[] userIds) {
+        Arrays.sort(userIds);
+        return encodeMd5(StringUtils.join(userIds, ""));
+    }
+
+    public static String generatorChatSessionId4Group(String groupId) {
+        return encodeMd5(groupId);
+    }
+
+    public static String getFileSuffix(String fileName) {
+        if (!isEmpty(fileName)) {
+            return null;
+        }
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public static boolean isNumber(String str) {
+        String checkNumber = "^[0-9]+$";
+        if (str == null) {
+            return false;
+        }
+        if (!str.matches(checkNumber)) {
+            return false;
+        }
+        return true;
     }
 }

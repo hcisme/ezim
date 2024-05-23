@@ -58,6 +58,16 @@ public class UserContactApplyDto extends BaseParam {
 
 	private Boolean queryContactInfo;
 
+	private Long lastApplyTimeStamp;
+
+	public Long getLastApplyTimeStamp() {
+		return lastApplyTimeStamp;
+	}
+
+	public void setLastApplyTimeStamp(Long lastApplyTimeStamp) {
+		this.lastApplyTimeStamp = lastApplyTimeStamp;
+	}
+
 	public Boolean getQueryContactInfo() {
 		return queryContactInfo;
 	}
@@ -162,4 +172,23 @@ public class UserContactApplyDto extends BaseParam {
 		return this.lastApplyTime;
 	}
 
+	@Override
+	public String toString() {
+		return "UserContactApplyDto{" +
+				"id=" + id +
+				", applyUserId='" + applyUserId + '\'' +
+				", applyUserIdFuzzy='" + applyUserIdFuzzy + '\'' +
+				", receiveUserId='" + receiveUserId + '\'' +
+				", receiveUserIdFuzzy='" + receiveUserIdFuzzy + '\'' +
+				", contactType=" + contactType +
+				", contactId='" + contactId + '\'' +
+				", contactIdFuzzy='" + contactIdFuzzy + '\'' +
+				", status=" + status +
+				", applyInfo='" + applyInfo + '\'' +
+				", applyInfoFuzzy='" + applyInfoFuzzy + '\'' +
+				", lastApplyTime=" + lastApplyTime +
+				", queryContactInfo=" + queryContactInfo +
+				", lastApplyTimeStamp=" + lastApplyTimeStamp +
+				'}';
+	}
 }

@@ -46,6 +46,8 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
         String userId = attr.get();
 
         logger.info("{} 连接断开", userId);
+        // 断开时更新用户 最后离线时间
+        channelContextUtils.removeContext(channel);
     }
 
     /**
@@ -60,8 +62,6 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
         logger.info("收到 {} 消息: {}", userId, msg.text());
 
         redisComponent.saveUserHeartBeat(userId);
-
-//        channelContextUtils.send2Group(msg.text());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
                 return;
             }
 
-            TokenUserInfoDto userInfo = redisComponent.getUserInfo(token);
+            TokenUserInfoDto userInfo = redisComponent.getUserInfoByToken(token);
             if (userInfo == null) {
                 ctx.channel().close();
                 return;

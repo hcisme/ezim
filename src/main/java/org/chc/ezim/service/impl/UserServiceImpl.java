@@ -15,10 +15,11 @@ import org.chc.ezim.mapper.UserBeautyMapper;
 import org.chc.ezim.mapper.UserContactMapper;
 import org.chc.ezim.mapper.UserMapper;
 import org.chc.ezim.redis.RedisComponent;
+import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.service.UserService;
 import org.chc.ezim.utils.CopyTools;
 import org.chc.ezim.utils.StringTools;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.chc.ezim.websocket.MessageHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +49,18 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserBeautyMapper<UserBeauty, UserBeautyDto> userBeautyMapper;
-    @Autowired
+
+    @Resource
     private UserContactMapper userContactMapper;
+
+    @Resource
+    private UserContactService userContactService;
+
+    @Resource
+    private ChatSessionUserServiceImpl chatSessionUserService;
+
+    @Resource
+    private MessageHandler messageHandler;
 
     /**
      * 根据条件查询列表
@@ -217,7 +228,8 @@ public class UserServiceImpl implements UserService {
             userBeautyMapper.updateByUserId(new UserBeauty(BeautyAccountStatusEnum.USED.getStatus()), id);
         }
 
-        // TODO 用户注册时就应该添加一个机器人好友
+        // 用户注册时就应该添加一个机器人好友
+        userContactService.addContact4Robot(id);
     }
 
     /**
@@ -237,7 +249,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("账号已禁用");
         }
 
-        // TODO 查询我的群组
+        // 查询我的群组
         // 查询我的联系人 加到 redis 缓存
         UserContactDto userContactDto = new UserContactDto();
         userContactDto.setUserId(user.getId());
@@ -292,7 +304,16 @@ public class UserServiceImpl implements UserService {
             contactNameUpdate = user.getNickName();
         }
 
-        // TODO 更新会话中的昵称信息
+        // 更新会话中的昵称信息
+        if (contactNameUpdate == null) {
+            return;
+        }
+        // 更新redis token信息中的昵称
+        TokenUserInfoDto userInfo = redisComponent.getUserInfoByUserId(user.getId());
+        userInfo.setNickName(contactNameUpdate);
+        redisComponent.saveTokenUserInfoDto(userInfo);
+
+        chatSessionUserService.updateRedundancyInfo(contactNameUpdate, user.getId());
     }
 
     @Override
@@ -309,7 +330,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void forceOffLine(String userId) {
-        // TODO 强制下线
+        MessageSendDto<Object> messageSendDto = new MessageSendDto<>();
+        messageSendDto.setContactType(UserContactTypeEnum.USER.getType());
+        messageSendDto.setMessageType(SendMessageTypeEnum.FORCE_OFF_LINE.getType());
+        messageSendDto.setContactId(userId);
+        messageHandler.sendMessage(messageSendDto);
     }
 
     private TokenUserInfoDto getTokenUserInfoDto(User user) {

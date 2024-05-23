@@ -66,7 +66,7 @@ public class UserContactController extends ABaseController {
     ) {
         TokenUserInfoDto userInfo = getTokenInfo(token);
 
-        userContactService.applyAdd(userInfo, applyAddDto.contactId, applyAddDto.applyInfo);
+        userContactApplyService.applyAdd(userInfo, applyAddDto.contactId, applyAddDto.applyInfo);
 
         return getSuccessResponseVO(null);
     }

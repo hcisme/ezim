@@ -78,11 +78,6 @@ public interface UserContactService {
     UserContactSearchResultVO searchContact(String userId, String contactId);
 
     /**
-     * 处理申请添加为好友
-     */
-    Integer applyAdd(TokenUserInfoDto userInfo, String contactId, String applyInfo);
-
-    /**
      * 删除联系人
      */
     void removeContactUser(String userId, String contactId, UserContactStatusEnum statusEnum);
@@ -91,4 +86,9 @@ public interface UserContactService {
      * 添加好友
      */
     void addContact(String applyUserId, String receiveUserId, String contactId, Integer contactType, String applyInfo);
+
+    /**
+     * 用户注册时 添加机器人为好友
+     */
+    void addContact4Robot(String userId);
 }

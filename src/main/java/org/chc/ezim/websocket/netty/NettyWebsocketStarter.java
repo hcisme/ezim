@@ -14,8 +14,10 @@ import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import org.chc.ezim.entity.config.AppConfigProperties;
 import org.chc.ezim.entity.constants.Constants;
+import org.chc.ezim.utils.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -24,9 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class NettyWebsocketStarter implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(NettyWebsocketStarter.class);
 
-    private static EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 
-    private static EventLoopGroup workGroup = new NioEventLoopGroup();
+    private static final EventLoopGroup workGroup = new NioEventLoopGroup();
 
     @Resource
     private HandlerHeartBeat handlerHeartBeat;
@@ -36,6 +38,9 @@ public class NettyWebsocketStarter implements Runnable {
 
     @Resource
     private AppConfigProperties appConfigProperties;
+
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
 
     @Override
     public void run() {
@@ -72,8 +77,15 @@ public class NettyWebsocketStarter implements Runnable {
                         }
                     });
 
-            ChannelFuture channelFuture = serverBootstrap.bind(appConfigProperties.getWsPort()).sync();
-            logger.info("启动 netty 成功, 服务运行在 127.0.0.1:{}", appConfigProperties.getWsPort());
+            Integer wsPort = appConfigProperties.getWsPort();
+            String wsPortStr = System.getProperty("ws.port");
+            if (!StringTools.isEmpty(wsPortStr)) {
+                wsPort = Integer.parseInt(wsPortStr);
+            }
+            ChannelFuture channelFuture = serverBootstrap.bind(wsPort).sync();
+
+            logger.info("启动 netty 成功, 服务运行在 {}:{}", redisHost, wsPort);
+
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             logger.error("启动 netty 失败");

@@ -1,6 +1,8 @@
 package org.chc.ezim.service;
 
+import org.chc.ezim.entity.dto.TokenUserInfoDto;
 import org.chc.ezim.entity.dto.UserGroupDto;
+import org.chc.ezim.entity.enums.SendMessageTypeEnum;
 import org.chc.ezim.entity.model.UserGroup;
 import org.chc.ezim.entity.vo.PaginationResultVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,4 +76,8 @@ public interface UserGroupService {
     void createOrUpdateGroup(UserGroup userGroup, MultipartFile avatarFile, MultipartFile avatarCover) throws IOException;
 
     void dissolve(String groupOwnerId, String groupId);
+
+    void addOrRemoveGroupUser(TokenUserInfoDto tokenUserInfoDto, String groupId, String selectContacts, Integer opType);
+
+    void leaveGroup(String contactId, String groupId, SendMessageTypeEnum messageTypeEnum);
 }

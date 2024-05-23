@@ -1,6 +1,7 @@
 package org.chc.ezim.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.chc.ezim.entity.constants.Constants;
 import org.chc.ezim.entity.enums.DateTimePatternEnum;
 import org.chc.ezim.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -83,11 +84,13 @@ public class User implements Serializable {
      */
     private Long lastOffTime;
 
+    private Integer onlineType;
+
     public User() {
     }
 
     // 注册用的
-    public User(String id, String email, String nickName, String password, Integer joinType,Integer status, Date createTime, Long lastOffTime) {
+    public User(String id, String email, String nickName, String password, Integer joinType, Integer status, Date createTime, Long lastOffTime) {
         this.id = id;
         this.email = email;
         this.nickName = nickName;
@@ -96,6 +99,17 @@ public class User implements Serializable {
         this.status = status;
         this.createTime = createTime;
         this.lastOffTime = lastOffTime;
+    }
+
+    public Integer getOnlineType() {
+        if (lastLoginTime != null && lastLoginTime.getTime() > lastOffTime) {
+            return Constants.ONE;
+        }
+        return Constants.ZERO;
+    }
+
+    public void setOnlineType(Integer onlineType) {
+        this.onlineType = onlineType;
     }
 
     public void setId(String id) {

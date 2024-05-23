@@ -1,5 +1,6 @@
 package org.chc.ezim.service;
 
+import org.chc.ezim.entity.dto.TokenUserInfoDto;
 import org.chc.ezim.entity.dto.UserContactApplyDto;
 import org.chc.ezim.entity.model.UserContactApply;
 import org.chc.ezim.entity.vo.PaginationResultVO;
@@ -86,6 +87,11 @@ public interface UserContactApplyService {
      * 根据ApplyUserIdAndReceiveUserIdAndContactId删除
      */
     Integer deleteUserContactApplyByApplyUserIdAndReceiveUserIdAndContactId(String applyUserId, String receiveUserId, String contactId);
+
+    /**
+     * 申请添加为好友
+     */
+    Integer applyAdd(TokenUserInfoDto userInfo, String contactId, String applyInfo);
 
     /**
      * 处理申请

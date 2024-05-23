@@ -11,7 +11,7 @@ public class SettingDto {
 
     private String robotUid = Constants.ROBOT_UID;
     private String robotNickName = "Ez-Im";
-    private String robotWelcome = "欢迎使用";
+    private String robotWelcome = "欢迎使用 " + robotNickName;
 
     public Integer getMaxGroupCount() {
         return maxGroupCount;

@@ -1,6 +1,7 @@
 package org.chc.ezim.entity.dto;
 
 
+import java.util.List;
 
 /**
  * 聊天消息表参数
@@ -85,6 +86,25 @@ public class ChatMessageDto extends BaseParam {
 	 */
 	private Integer status;
 
+	private List<String> contactIdList;
+
+	private Long lastReceiveTime;
+
+	public Long getLastReceiveTime() {
+		return lastReceiveTime;
+	}
+
+	public void setLastReceiveTime(Long lastReceiveTime) {
+		this.lastReceiveTime = lastReceiveTime;
+	}
+
+	public List<String> getContactIdList() {
+		return contactIdList;
+	}
+
+	public void setContactIdList(List<String> contactIdList) {
+		this.contactIdList = contactIdList;
+	}
 
 	public void setId(Long id){
 		this.id = id;
@@ -238,4 +258,29 @@ public class ChatMessageDto extends BaseParam {
 		return this.status;
 	}
 
+	@Override
+	public String toString() {
+		return "ChatMessageDto{" +
+				"id=" + id +
+				", sessionId='" + sessionId + '\'' +
+				", sessionIdFuzzy='" + sessionIdFuzzy + '\'' +
+				", messageType=" + messageType +
+				", messageContent='" + messageContent + '\'' +
+				", messageContentFuzzy='" + messageContentFuzzy + '\'' +
+				", sendUserId='" + sendUserId + '\'' +
+				", sendUserIdFuzzy='" + sendUserIdFuzzy + '\'' +
+				", sendUserNickName='" + sendUserNickName + '\'' +
+				", sendUserNickNameFuzzy='" + sendUserNickNameFuzzy + '\'' +
+				", sendTime=" + sendTime +
+				", contactId='" + contactId + '\'' +
+				", contactIdFuzzy='" + contactIdFuzzy + '\'' +
+				", contactType=" + contactType +
+				", fileSize=" + fileSize +
+				", fileName='" + fileName + '\'' +
+				", fileNameFuzzy='" + fileNameFuzzy + '\'' +
+				", fileType=" + fileType +
+				", status=" + status +
+				", contactIdList=" + contactIdList +
+				'}';
+	}
 }

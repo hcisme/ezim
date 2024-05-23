@@ -18,15 +18,14 @@ public class Constants {
 
     public static final Integer REDIS_TIME_1MIN = 60;
 
-    // TODO
-    public static final Integer REDIS_KEY_EXPIRES_HEART_BEAT = 6 * 60;
+    public static final Integer REDIS_KEY_EXPIRES_HEART_BEAT = 6 * 600;
 
     public static final Integer REDIS_KEY_EXPIRES_DAY = REDIS_TIME_1MIN * 60 * 24;
 
     /**
-     * token 失效时间 2天
+     * token 失效时间 12天
      */
-    public static final Integer REDIS_KEY_TOKEN_EXPIRES = REDIS_KEY_EXPIRES_DAY * 2;
+    public static final Integer REDIS_KEY_TOKEN_EXPIRES = REDIS_KEY_EXPIRES_DAY * 12;
 
 
     /**
@@ -45,6 +44,8 @@ public class Constants {
      * 路径相关
      */
     public static final String FILE_FOLDER = "file/";
+
+    public static final String FILE_FOLDER_UPLOAD_FILE_NAME = "uploadFile/";
 
     public static final String APP_UPDATE_FOLDER = "app/";
 
@@ -73,4 +74,25 @@ public class Constants {
      * 用户联系人列表的key
      */
     public static final String REDIS_KEY_USER_CONTACT = "ezim:ws:user:contact:";
+
+    /**
+     *
+     */
+    public static final Long MillisSECONDS_3DAYS_ago = 3 * 24 * 60 * 60 * 1000L;
+
+    public static final String[] IMAGE_SUFFIX_LIST = new String[]{".jpeg", ".jpg", ".png", ".gif", ".bmp", ".webp"};
+
+    public static final String[] VIDEO_SUFFIX_LIST = new String[]{".mp4", ".avi", ".rmvb", ".mkv", ".mov"};
+
+    public static final Long FILE_SIZE_MB = 1024 * 1024L;
+
+    /**
+     * 从群聊中移除人
+     */
+    public static final Integer ZERO = 0;
+
+    /**
+     * 添加人到群聊
+     */
+    public static final Integer ONE = 1;
 }

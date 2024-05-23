@@ -73,6 +73,9 @@
 			<if test="query.applyInfoFuzzy!= null  and query.applyInfoFuzzy!=''">
 				 and  a.apply_info like concat('%', #{query.applyInfoFuzzy}, '%')
 			</if>
+			<if test="query.lastApplyTimeStamp!= null  and query.lastApplyTimeStamp!=''">
+				and  a.last_apply_time>=#{query.lastApplyTimeStamp}
+			</if>
 		</where>
 	</sql>
 
