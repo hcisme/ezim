@@ -21,10 +21,15 @@ import org.chc.ezim.service.UserContactApplyService;
 import org.chc.ezim.service.UserContactService;
 import org.chc.ezim.service.UserService;
 import org.chc.ezim.utils.CopyTools;
+import org.chc.ezim.utils.PinYinUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 联系人 Controller
@@ -76,7 +81,7 @@ public class UserContactController extends ABaseController {
      */
     @GlobalAccessInterceptor
     @GetMapping("/getApplyList")
-    public ResponseVO getApplyList(@RequestHeader("token") String token, @RequestParam(required = false) Integer currentPage) {
+    public ResponseVO getApplyList(@RequestHeader("token") String token, @RequestParam(required = false) Integer currentPage, @RequestParam(required = false) Integer pageSize) {
         TokenUserInfoDto userInfo = getTokenInfo(token);
 
         UserContactApplyDto userContactApplyDto = new UserContactApplyDto();
@@ -133,9 +138,26 @@ public class UserContactController extends ABaseController {
                 UserContactStatusEnum.BLACKLIST_BE.getStatus(),
         });
 
-        List<UserContact> listByParam = userContactService.findListByParam(userContactDto);
+        List<UserContact> userContactList = userContactService.findListByParam(userContactDto);
 
-        return getSuccessResponseVO(listByParam);
+        // 处理数据根据拼音分组
+//        Map<String, List<UserContact>> categorizedContacts = new HashMap<>();
+//
+//        for (UserContact contact : userContactList) {
+//            String initial = PinYinUtil.getPinyinInitial(contact.getContactName());
+//            categorizedContacts.computeIfAbsent(initial, k -> new ArrayList<>()).add(contact);
+//        }
+//        Map<String, List<UserContact>> categoryContactList = categorizedContacts.entrySet()
+//                .stream()
+//                .sorted(Map.Entry.comparingByKey())
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        Map.Entry::getValue,
+//                        (e1, e2) -> e1,
+//                        HashMap::new
+//                ));
+
+        return getSuccessResponseVO(userContactList);
     }
 
     /**
