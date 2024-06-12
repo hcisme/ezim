@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.Attribute;
@@ -16,6 +15,9 @@ import org.chc.ezim.websocket.ChannelContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @ChannelHandler.Sharable
 @Component
@@ -36,6 +38,7 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("有新连接加入");
     }
+
     /**
      * 断掉连接 调用
      */
@@ -68,8 +71,7 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // 握手完成
         if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete complete) {
-            HttpHeaders headers = complete.requestHeaders(); // 获取请求头
-            String token = headers.get("token");
+            String token = extractTokenFromUri(complete.requestUri());
             if (token == null) {
                 ctx.channel().close();
                 return;
@@ -83,5 +85,24 @@ public class HandlerWebSocket extends SimpleChannelInboundHandler<TextWebSocketF
 
             channelContextUtils.addContext(userInfo.getId(), ctx.channel());
         }
+    }
+
+    private String extractTokenFromUri(String uriString) throws URISyntaxException {
+        URI uri = new URI(uriString);
+        String query = uri.getQuery();
+        String token = null;
+
+        if (query != null) {
+            String[] params = query.split("&");
+            for (String param : params) {
+                String[] keyValue = param.split("=");
+                if (keyValue.length == 2 && "token".equals(keyValue[0])) {
+                    token = keyValue[1];
+                    break;
+                }
+            }
+        }
+
+        return token;
     }
 }

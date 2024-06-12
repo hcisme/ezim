@@ -18,7 +18,7 @@ public class Constants {
 
     public static final Integer REDIS_TIME_1MIN = 60;
 
-    public static final Integer REDIS_KEY_EXPIRES_HEART_BEAT = 6 * 600;
+    public static final Integer REDIS_KEY_EXPIRES_HEART_BEAT = 6;
 
     public static final Integer REDIS_KEY_EXPIRES_DAY = REDIS_TIME_1MIN * 60 * 24;
 
