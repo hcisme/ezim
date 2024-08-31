@@ -1,15 +1,15 @@
 package org.chc.ezim.entity.dto;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ChatSendMessageDto {
     @NotEmpty
     private String contactId;
 
     @NotEmpty
-    @Max(500)
+    @Size(max = 500)
     private String messageContent;
 
     @NotNull
@@ -29,11 +29,11 @@ public class ChatSendMessageDto {
         this.contactId = contactId;
     }
 
-    public @NotEmpty @Max(500) String getMessageContent() {
+    public @NotEmpty @Size(max = 500) String getMessageContent() {
         return messageContent;
     }
 
-    public void setMessageContent(@NotEmpty @Max(500) String messageContent) {
+    public void setMessageContent(@NotEmpty @Size(max = 500) String messageContent) {
         this.messageContent = messageContent;
     }
 

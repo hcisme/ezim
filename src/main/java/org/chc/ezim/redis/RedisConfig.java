@@ -22,6 +22,9 @@ public class RedisConfig<v> {
     @Value("${spring.data.redis.port}")
     private Integer redisPort;
 
+    @Value("${spring.data.redis.password}")
+    private String redisPwd;
+
     @Bean("redisConfigTemplate")
     public RedisTemplate<String, v> redisTemplate(RedisConnectionFactory factory) {
         var template = new RedisTemplate<String, v>();
@@ -43,7 +46,7 @@ public class RedisConfig<v> {
     public RedissonClient redissonClient() {
         try {
             Config config = new Config();
-            config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort);
+            config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort).setPassword(redisPwd);
             return Redisson.create(config);
         } catch (Exception e) {
             logger.info("redissonClient 配置出错，请检查 redisson 配置");

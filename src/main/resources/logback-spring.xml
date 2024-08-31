@@ -16,7 +16,7 @@
     <property name="LOG_FILE_NAME" value="ezim.log"/>
 
     <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}\${LOG_FOLDER}\${LOG_FILE_NAME}</file>
+        <file>${LOG_PATH}/${LOG_FOLDER}/${LOG_FILE_NAME}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${LOG_PATH}/${LOG_FOLDER}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>

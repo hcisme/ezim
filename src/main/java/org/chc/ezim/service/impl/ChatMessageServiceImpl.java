@@ -217,6 +217,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessageMapper.insert(chatMessage);
 
         MessageSendDto messageSendDto = CopyTools.copy(chatMessage, MessageSendDto.class);
+        messageSendDto.setMessageId(chatMessage.getId());
         if (Constants.ROBOT_UID.equals(contactId)) {
             SettingDto setting = redisComponent.getSetting();
             TokenUserInfoDto robot = new TokenUserInfoDto();
@@ -230,7 +231,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         } else {
             messageHandler.sendMessage(messageSendDto);
         }
-        return null;
+        return messageSendDto;
     }
 
     @Override

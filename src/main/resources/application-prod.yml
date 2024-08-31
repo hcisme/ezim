@@ -2,3 +2,21 @@ spring:
   config:
     activate:
       on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/ezim?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: ezim
+    password: emmmm000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 自定义变量名
+log:
+  path: /www/wwwroot/ezim/
+  root:
+    level: info
+
+project:
+  folder: /www/wwwroot/ezim/
+
+admin:
+  emails: admin@163.com
